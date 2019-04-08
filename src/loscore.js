@@ -9,7 +9,7 @@ class LoScore {
   |~~~~~~~~~~
   * */
   uniq(array) {
-    let status = Boolean;
+    let status;
     let newArray = [];
     for (var i = 0; i < array.length; i++) {
       status = true;
