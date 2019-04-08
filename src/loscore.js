@@ -9,7 +9,20 @@ class LoScore {
   |~~~~~~~~~~
   * */
   uniq(array) {
-    // YOUR CODE HERE
+    let status = Boolean;
+    let newArray = [];
+    for (var i = 0; i < array.length; i++) {
+      status = true;
+      for (var j = 0; j < newArray.length; j++) {
+        if (array[i] === newArray[j]) {
+          status = false;
+        }
+      }
+      if (status === true) {
+        newArray.push(array[i]);
+      }
+    }
+    return newArray;
   }
 
   /**
@@ -30,7 +43,11 @@ class LoScore {
   }
 
   map(collection, iteratee) {
-    // YOUR CODE HERE
+    let newArray = [];
+    this.each(collection, (element) => {
+      newArray.push(iteratee(element));
+    });
+    return newArray;
   }
 
   filter(collection, test) {
@@ -39,22 +56,42 @@ class LoScore {
     return result;
   }
 
-  reject(collection, test) {}
-
-  reduce(collection, iterator, accumulator) {
-    // YOUR CODE HERE
+  reject(collection, test) {
+    return this.filter(collection, (element) => !test(element));
   }
 
-  every() {
-    // YOUR CODE HERE
+  reduce(collection, iterator, accumulator) {
+    this.each(collection, (element, i) => {
+      if (accumulator === undefined && i === 0) {
+        accumulator = element;
+      } else {
+        accumulator = iterator(accumulator, element, i);
+      }
+    });
+
+    return accumulator;
+  }
+
+  every(collection, test = this.identity) {
+    return this.reduce(
+      collection,
+      (acc, element) => !!test(element) && acc,
+      true
+    );
   }
 
   /**
   | OBJECTS
   |~~~~~~~~~~
   * */
-  extend(obj) {
-    // YOUR CODE HERE
+  extend(obj, ...objects) {
+    this.each(objects, (object) => {
+      //Object.assign(obj, object); we are not supposed to do this!!
+      for (let key in object) {
+        obj[key] = object[key];
+      }
+    });
+    return obj;
   }
 
   /**
@@ -63,15 +100,46 @@ class LoScore {
   * */
 
   once(func) {
-    // YOUR CODE HERE
+    let status = true;
+    let result;
+    return function(...args) {
+      if (status === false) {
+        return result;
+      } else {
+        result = func(...args);
+        status = false;
+        return result;
+      }
+    };
   }
 
   memoize(func) {
-    // YOUR CODE HERE
+    let hash = {};
+    return function memo(arg) {
+      if (hash.hasOwnProperty(arg)) {
+        return hash[arg];
+      }
+      hash[arg] = func(arg);
+      return hash[arg];
+    };
   }
 
   invoke(collection, functionOrKey) {
-    // YOUR CODE HERE
+    let array = [];
+
+    if (typeof functionOrKey === "function") {
+      this.each(collection, function(element) {
+        array.push(functionOrKey.apply(element));
+        // console.log(element.functionOrKey);
+        // console.log(functionOrKey(element));
+      });
+      return array;
+    }
+    this.each(collection, (element) => {
+      // console.log(element[functionOrKey]());
+      array.push(element[functionOrKey]());
+    });
+    return array;
   }
 
   /**
