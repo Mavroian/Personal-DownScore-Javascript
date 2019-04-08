@@ -10,7 +10,7 @@ class LoScore {
   * */
   uniq(array) {
     let status;
-    let newArray = [];
+    const newArray = [];
     for (let i = 0; i < array.length; i++) {
       status = true;
       for (let j = 0; j < newArray.length; j++) {
